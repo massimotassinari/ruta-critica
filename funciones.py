@@ -16,11 +16,11 @@ def start_finish_nodes(info):
         except Exception:
             pass
 
-        if actividad['predecesor'] == []:
+        if actividad['predecesor'] == ['']:
             actividad['start_node'] = True
+            actividad['predecesor'] = None
 
-    finish_node = [
-        elemento for elemento in actividades if elemento not in predecesoras]
+    finish_node = [elemento for elemento in actividades if elemento not in predecesoras]
 
     for actividad in info:
         if actividad['ID'] == finish_node[0]:
