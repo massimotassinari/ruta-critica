@@ -58,6 +58,65 @@ def runCPM(info):
                 # Al nodo predecesor le asignamos su sucesor
                 G.nodes[predecesor]['sucesor'].append(G.nodes[node]['ID'])
 
+    # Iniciamos el algoritmo de la ruta crítica
+
+        # Primero aplicamos el ForwardPass, donde usaremos la lista de actividades sucesoras que hay en cada actividad
+    for node in G.nodes():
+
+        G.nodes[node]['EF'] = G.nodes[node]['ES'] + G.nodes[node]['D']
+
+        for sucesor in list(G.nodes[node]['sucesor']):
+            if G.nodes[node]['EF'] > G.nodes[sucesor]['ES']:
+                G.nodes[sucesor]['ES'] = G.nodes[node]['EF']
+                G.nodes[sucesor]['EF'] = G.nodes[sucesor]['ES'] + \
+                    G.nodes[sucesor]['D']
+
+        if G.nodes[node]['predecesor'] != None:
+            for predecesor in list(G.nodes[node]['predecesor']):
+                if G.nodes[predecesor]['EF'] > G.nodes[node]['ES']:
+                    G.nodes[node]['ES'] = G.nodes[predecesor]['EF']
+                    G.nodes[node]['EF'] = G.nodes[node]['ES'] + \
+                        G.nodes[node]['D']
+
+        if G.nodes[node]['finish_node'] == True:
+            G.nodes[node]['LF'] = G.nodes[node]['EF']
+
+        # Ahora aplicamos el BackwardPass, donde usaremos la lista de actividades predecesoras que hay en cada actividad
+    while G.nodes[start_node]['start_node'] != False:
+
+        for node in G.nodes():
+            if G.nodes[node]['finish_node'] == True:
+
+                G.nodes[node]['LS'] = G.nodes[node]['LF'] - G.nodes[node]['D']
+                G.nodes[node]['finish_node'] = False
+
+                if G.nodes[node]['predecesor'] != None:
+                    for predecesor in list(G.nodes[node]['predecesor']):
+                        if G.nodes[node]['LS'] < G.nodes[predecesor]['LF']:
+                            G.nodes[predecesor]['LF'] = G.nodes[node]['LS']
+                            G.nodes[predecesor]['LS'] = G.nodes[predecesor]['LF'] - \
+                                G.nodes[predecesor]['D']
+                        G.nodes[predecesor]['finish_node'] = True
+
+                if G.nodes[node] == G.nodes[start_node]:
+                    G.nodes[node]['start_node'] = False
+
+        # Calculo de la holgura de cada actividad
+    for node in G.nodes():
+        G.nodes[node]['H'] = G.nodes[node]['LS'] - G.nodes[node]['ES']
+
+        # Obtener camíno de la ruta crítica en orden
+    critical_path = []
+    inicio_CP = start_node
+    # print(str(inicio_CP))
+    critical_path.append(inicio_CP)
+
+    while G.nodes[inicio_CP] != G.nodes[finish_node]:
+        for sucesor in list(G.nodes[inicio_CP]['sucesor']):
+            if G.nodes[sucesor]['H'] == 0:
+                inicio_CP = G.nodes[sucesor]['ID']
+                critical_path.append(inicio_CP)
+
     print(G)
     nx.draw(G, with_labels=True, node_color='lightblue',node_size=500, edge_color='gray')
 
