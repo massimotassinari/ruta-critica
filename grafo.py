@@ -60,7 +60,7 @@ def runCPM(info):
 
     # Iniciamos el algoritmo de la ruta crítica
 
-        # Primero aplicamos el ForwardPass, donde usaremos la lista de actividades sucesoras que hay en cada actividad
+    # Primero aplicamos el ForwardPass, donde usaremos la lista de actividades sucesoras que hay en cada actividad
     for node in G.nodes():
 
         G.nodes[node]['EF'] = G.nodes[node]['ES'] + G.nodes[node]['D']
@@ -101,11 +101,11 @@ def runCPM(info):
                 if G.nodes[node] == G.nodes[start_node]:
                     G.nodes[node]['start_node'] = False
 
-        # Calculo de la holgura de cada actividad
+    # Calculo de la holgura de cada actividad
     for node in G.nodes():
         G.nodes[node]['H'] = G.nodes[node]['LS'] - G.nodes[node]['ES']
 
-        # Obtener camíno de la ruta crítica en orden
+    # Obtener camíno de la ruta crítica en orden
     critical_path = []
     inicio_CP = start_node
     # print(str(inicio_CP))
