@@ -117,119 +117,53 @@ def runCPM(info):
                 inicio_CP = G.nodes[sucesor]['ID']
                 critical_path.append(inicio_CP)
 
-    ########
-    window = tkinter.Tk()
-    window.geometry("1024x600")
-    window.wm_title("Problema Ruta Crítica")
-
-    # Título del Reporte
-    label_act = tkinter.Label(window, fg="#a60338", text="Reporte de Actividades (Ejemplo del Parcial 2)", font=(
-        "verdana", 12)).place(x=190, y=15)
-
-    # Terminos a tomar en consideración
-    terminos = tkinter.Label(window, fg="#a60338", text="Terminos usados en el reporte", font=(
-        "verdana", 10)).place(x=790, y=70)
-    termino_D = tkinter.Label(window, fg="#2d2da7", text="D: Duración", font=(
-        "verdana", 10)).place(x=790, y=100)
-    termino_ES = tkinter.Label(window, fg="#2d2da7", text="ES:", font=(
-        "verdana", 10)).place(x=790, y=130)
-    termino_ES1 = tkinter.Label(window, fg="#2d2da7", text="Early Start (Inicio más temprano)", font=(
-        "verdana", 7)).place(x=820, y=130)
-    termino_EF = tkinter.Label(window, fg="#2d2da7", text="EF:", font=(
-        "verdana", 10)).place(x=790, y=160)
-    termino_EF1 = tkinter.Label(window, fg="#2d2da7", text="Early Finish (Inicio más tardío)", font=(
-        "verdana", 7)).place(x=820, y=160)
-    termino_LS = tkinter.Label(window, fg="#2d2da7", text="LS:", font=(
-        "verdana", 10)).place(x=790, y=190)
-    termino_LS1 = tkinter.Label(window, fg="#2d2da7", text="Late Start (Culminación más temprana)", font=(
-        "verdana", 7)).place(x=820, y=190)
-    termino_LF = tkinter.Label(window, fg="#2d2da7", text="LF:", font=(
-        "verdana", 10)).place(x=790, y=220)
-    termino_LF1 = tkinter.Label(window, fg="#2d2da7", text="Late Finish (Culminación más tardía)", font=(
-        "verdana", 7)).place(x=820, y=220)
-    termino_H = tkinter.Label(window, fg="#2d2da7", text="H: Holgura", font=(
-        "verdana", 10)).place(x=790, y=250)
-
-    # Etiquetas cuadro del reporte
-    label_act = tkinter.Label(window, fg="#2d2da7", text="| Actividad", font=(
-        "verdana", 10)).place(x=20, y=50)
-    label_des = tkinter.Label(window, fg="#2d2da7", text="| Descripción", font=(
-        "verdana", 10)).place(x=100, y=50)
-    label_pre = tkinter.Label(window, fg="#2d2da7", text="| Predecesor", font=(
-        "verdana", 10)).place(x=220, y=50)
-    label_suc = tkinter.Label(window, fg="#2d2da7", text="| Sucesor", font=(
-        "verdana", 10)).place(x=320, y=50)
-    label_D = tkinter.Label(window, fg="#2d2da7", text="| D", font=(
-        "verdana", 10)).place(x=420, y=50)
-    label_ES = tkinter.Label(window, fg="#2d2da7", text="| ES", font=(
-        "verdana", 10)).place(x=480, y=50)
-    label_EF = tkinter.Label(window, fg="#2d2da7", text="| EF", font=(
-        "verdana", 10)).place(x=540, y=50)
-    label_LS = tkinter.Label(window, fg="#2d2da7", text="| LS", font=(
-        "verdana", 10)).place(x=600, y=50)
-    label_LF = tkinter.Label(window, fg="#2d2da7", text="| LF", font=(
-        "verdana", 10)).place(x=660, y=50)
-    label_H = tkinter.Label(window, fg="#2d2da7", text="| H", font=(
-        "verdana", 10)).place(x=720, y=50)
-
-    # Cada registro completa de cada actividad
-    pos_y = 50
-    aux_predecesor = {}
-    aux_sucesor = {}
+    color_map = []
     for node in G.nodes():
-        pos_y += 50
-        if G.nodes[node]['predecesor'] == None:
-            aux_predecesor = '--'
+        G.nodes[node]['pos_asign'] = False
+        if G.nodes[node]['H'] == 0:
+            color_map.append(('#6e46c4'))
         else:
-            aux_predecesor = str(G.nodes[node]['predecesor'])
-        if len(G.nodes[node]['sucesor']) == 0:
-            aux_sucesor = '--'
-        else:
-            aux_sucesor = str(G.nodes[node]['sucesor'])
+            color_map.append(('#e691ca'))
 
-        tkinter.Label(window, fg="#292931", text="| " +
-                      str(node), font=("verdana", 10)).place(x=20, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['descripcion']), font=("verdana", 7)).place(x=100, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + aux_predecesor,
-                      font=("verdana", 10)).place(x=220, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + aux_sucesor,
-                      font=("verdana", 10)).place(x=320, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['D']) + " días", font=("verdana", 10)).place(x=420, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['ES']) + " días", font=("verdana", 10)).place(x=480, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['EF']) + " días", font=("verdana", 10)).place(x=540, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['LS']) + " días", font=("verdana", 10)).place(x=600, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['LF']) + " días", font=("verdana", 10)).place(x=660, y=pos_y)
-        tkinter.Label(window, fg="#292931", text="| " + str(
-            G.nodes[node]['H']) + " días", font=("verdana", 10)).place(x=720, y=pos_y)
+    # Establecer posición de los nodos
+    for node in G.nodes():
+        if G.nodes[node] == start_node:
+            G.nodes[node]['pos_asign'] = True
+        acum_y = 0
+        for sucesor in list(G.nodes[node]['sucesor']):
+            if G.nodes[sucesor]['pos_asign'] == False:
+                G.nodes[sucesor]['posx'] = G.nodes[node]['posx'] + 2
+                G.nodes[sucesor]['posy'] = G.nodes[node]['posy'] - acum_y
+                G.nodes[sucesor]['pos'] = (G.nodes[sucesor]['posx'], G.nodes[sucesor]['posy'])
+                acum_y = acum_y + 0.5
+                G.nodes[sucesor]['pos_asign'] = True
 
-    pos_y += 50
 
-    text1 = 'NOTA: Las actividades que forman parte de la ruta crítica son aquellas que tienen holgura "H" igual a 0) y, por lo tanto, no se pueden retrasar ya que afectarían la ejecución del proyecto. '
-    text2 = 'Por otro lado, aquellas que tienen holgura "H" mayor a 0 pueden retrasarse un poco sin afectar al proyecto en general. '
-    text3 = 'A continuación se muestran las actividades de la ruta crítica en un arreglo en orden de éjecución: ' + \
-            str(critical_path)
-    show_text = text1 + text2 + text3
-    label_CP = tkinter.Label(window, fg='#034f0c', text=show_text, wraplength=600, font=(
-        "verdana", 10)).place(x=20, y=pos_y)
+    # Obtener posición de los nodos del grafo
+    pos = nx.get_node_attributes(G,'pos')
 
-    text4 = 'Puede observar mejor las actividades de la ruta crítica viendo el grafo. Para ello presione en el botón de abajo "Mostrar Grafo de la Ruta Crítica"'
-    label_btn_mostrar_grafo = label_CP = tkinter.Label(
-        window, fg='#960019', text=text4, wraplength=200, font=("verdana", 10)).place(x=800, y=400)
-    btn_mostrar_grafo_CP = tkinter.Button(
-        window, bg='#d15b70', text="Mostrar Grafo de la Ruta Crítica", command=mostrar_grafo, font=("verdana", 10)).place(x=780, y=500)
+    options_arrow = {
+        'width': 2,
+        'arrowstyle': '-|>',
+        'arrowsize': 15,
+    }
 
-    window.mainloop()
+    dias = []
+    for i in range(G.nodes[start_node]['ES'], G.nodes[finish_node]['EF']):
+        dia = 'día ' + str(i)
+        dias.append(dia)
 
-    #######
+    mapeado = range(len(dias))
 
-    print(G)
-    nx.draw(G, with_labels=True, node_color='lightblue',node_size=500, edge_color='gray')
-
-# Mostrar el grafo
+    # Configurar la forma de dibujar el grafo
+    image_file = "ruta-critica/fondografo.png"
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.set_facecolor('#d4b7ff')
+    nx.draw_networkx_nodes(G, pos, node_color = color_map, node_size=500)
+    nx.draw_networkx_edges(G, pos, alpha=0.6, edge_color='black', arrows=True, **options_arrow)
+    nx.draw_networkx_labels(G, pos, font_size=6, font_family='sans-serif')
+    plt.xticks(mapeado, dias) 
+    plt.title('Actividades de la Ruta Crítica (Nodos en Morado)')
     plt.show()
+
+    return G, critical_path
