@@ -59,8 +59,7 @@ def runCPM(info):
                 G.nodes[predecesor]['sucesor'].append(G.nodes[node]['ID'])
 
     print(G)
-    nx.draw(G, with_labels=True, node_color='lightblue',
-            node_size=500, edge_color='gray')
+    nx.draw(G, with_labels=True, node_color='lightblue',node_size=500, edge_color='gray')
 
 # Mostrar el grafo
     plt.show()

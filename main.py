@@ -94,7 +94,7 @@ class Aplication(ttk.Frame):
 
         actividad["ID"] = id.upper()
         actividad["descripcion"] = description
-        actividad["duracion"] = time
+        actividad["duracion"] = int(time)
         actividad["predecesor"] = p
         actividad["start_node"] = False
         actividad["finish_node"] = False
