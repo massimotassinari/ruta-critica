@@ -7,7 +7,6 @@ import tkinter
 import funciones as f
 
 
-
 # Función para correr el CPM
 def runCPM(info):
     # Creación del grafo
@@ -60,13 +59,8 @@ def runCPM(info):
                 G.nodes[predecesor]['sucesor'].append(G.nodes[node]['ID'])
 
     print(G)
-    nx.draw(G, with_labels=True, node_color='lightblue', node_size=500, edge_color='gray')
+    nx.draw(G, with_labels=True, node_color='lightblue',
+            node_size=500, edge_color='gray')
 
 # Mostrar el grafo
     plt.show()
-
-    # Iniciamos el algoritmo de la ruta crítica
-
-	# Primero aplicamos el ForwardPass, donde usaremos la lista de actividades sucesoras que hay en cada actividad
-    
-
