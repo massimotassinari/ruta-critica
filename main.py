@@ -3,6 +3,13 @@ from tkinter import ttk
 from tkinter import PhotoImage, Label
 import grafo as g
 import funciones as f
+import networkx as nx
+import numpy as np
+import math
+import matplotlib
+import matplotlib.pyplot as plt
+import funciones as f
+
 
 
 class Aplication(ttk.Frame):
@@ -106,13 +113,65 @@ class Aplication(ttk.Frame):
         self.predecesor.delete(0, tk.END)
         self.descripcion.delete(0, tk.END)
 
-        print(self.info)
+    def grafo(self):
+
+        info = f.start_finish_nodes(self.info)
+        G, critical_path, start_node,finish_node= g.runCPM(info)
+
+        color_map = []
+        for node in G.nodes():
+            G.nodes[node]['pos_asign'] = False
+            if G.nodes[node]['H'] == 0:
+                color_map.append(('#6e46c4'))
+            else:
+                color_map.append(('#e691ca'))
+
+        # Se establece la posicion de los nodos usando las variables posx y posy
+        for node in G.nodes():
+            if G.nodes[node] == start_node:
+                G.nodes[node]['pos_asign'] = True
+            acum_y = 0
+            for sucesor in list(G.nodes[node]['sucesor']):
+                if G.nodes[sucesor]['pos_asign'] == False:
+                    G.nodes[sucesor]['posx'] = G.nodes[node]['posx'] + 2
+                    G.nodes[sucesor]['posy'] = G.nodes[node]['posy'] - acum_y
+                    G.nodes[sucesor]['pos'] = (
+                        G.nodes[sucesor]['posx'], G.nodes[sucesor]['posy'])
+                    acum_y = acum_y + 0.5
+                    G.nodes[sucesor]['pos_asign'] = True
+
+        # obtiene la posicion de los nodos para pasarselo como parametro a la fucion que pinta el grafo "draw_networkx_nodes"
+        pos = nx.get_node_attributes(G, 'pos')
+
+        options_arrow = {
+            'width': 2,
+            'arrowstyle': '-|>',
+            'arrowsize': 15,
+        }
+
+        dias = []
+        for i in range(G.nodes[start_node]['ES'], G.nodes[finish_node]['EF']):
+            dia = 'día ' + str(i)
+            dias.append(dia)
+
+        mapeado = range(len(dias))
+
+        # Se hace pasan los parametros que representan el grafo com una ruta critica
+        image_file = "ruta-critica/fondografo.png"
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.set_facecolor('#d4b7ff')
+        nx.draw_networkx_nodes(G, pos, node_color=color_map, node_size=500)
+        nx.draw_networkx_edges(
+            G, pos, alpha=0.6, edge_color='black', arrows=True, **options_arrow)
+        nx.draw_networkx_labels(G, pos, font_size=6, font_family='sans-serif')
+        plt.xticks(mapeado, dias)
+        plt.title('Actividades de la Ruta Crítica (Nodos en Morado)')
+        plt.show()
 
 
     def calcular(self):
         info = f.start_finish_nodes(self.info)
-        print(info)
-        G, C = g.runCPM(info)
+        G, C, s, p = g.runCPM(info)
 
         ventana_secundaria = tk.Toplevel()
         ventana_secundaria.configure(background="#e691ca")
@@ -152,6 +211,9 @@ class Aplication(ttk.Frame):
                 aux_sucesor = '--'
             else:
                 aux_sucesor = str(G.nodes[node]['sucesor'])
+        
+            aux_predecesor = str(aux_predecesor)[1:-1]
+            aux_sucesor = str(aux_sucesor)[1:-1]
 
             tk.Label(ventana_secundaria, fg="#292931", bg="#e691ca", text="| " +
                             str(node), font=("Inter", 10)).place(x=20, y=pos_y)
@@ -176,10 +238,25 @@ class Aplication(ttk.Frame):
 
         pos_y += 50
 
-        text3 = 'Actividades de la ruta crítica ' + \
-                str(C)
+        text3 = 'Actividades de la ruta crítica: ' + \
+                str(C)[1:-1]
         show_text = text3
         label_CP = tk.Label(ventana_secundaria, fg='#292931',bg="#e691ca", text=show_text, wraplength=600, font=("Inter", 10, "bold")).place(x=20, y=pos_y)
+
+        self.grafo_mostrar = tk.Button(
+            ventana_secundaria,
+            text="Ver grafo",
+            font=("Inter", 14),
+            bg="#6e46c4",
+            fg="black",
+            command=self.grafo,
+            relief="flat",
+        )
+
+        self.grafo_mostrar.place(
+            x=360, y=582
+        )
+
 
 main_window = tk.Tk()
 app = Aplication(main_window)

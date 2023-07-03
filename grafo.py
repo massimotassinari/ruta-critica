@@ -136,54 +136,8 @@ def runCPM(info):
                 inicio_CP = G.nodes[sucesor]['ID']
                 critical_path.append(inicio_CP)
 
-    color_map = []
-    for node in G.nodes():
-        G.nodes[node]['pos_asign'] = False
-        if G.nodes[node]['H'] == 0:
-            color_map.append(('#6e46c4'))
-        else:
-            color_map.append(('#e691ca'))
+    return G, critical_path, start_node,finish_node
 
-    # Se establece la posicion de los nodos usando las variables posx y posy
-    for node in G.nodes():
-        if G.nodes[node] == start_node:
-            G.nodes[node]['pos_asign'] = True
-        acum_y = 0
-        for sucesor in list(G.nodes[node]['sucesor']):
-            if G.nodes[sucesor]['pos_asign'] == False:
-                G.nodes[sucesor]['posx'] = G.nodes[node]['posx'] + 2
-                G.nodes[sucesor]['posy'] = G.nodes[node]['posy'] - acum_y
-                G.nodes[sucesor]['pos'] = (
-                    G.nodes[sucesor]['posx'], G.nodes[sucesor]['posy'])
-                acum_y = acum_y + 0.5
-                G.nodes[sucesor]['pos_asign'] = True
 
-    # obtiene la posicion de los nodos para pasarselo como parametro a la fucion que pinta el grafo "draw_networkx_nodes"
-    pos = nx.get_node_attributes(G, 'pos')
 
-    options_arrow = {
-        'width': 2,
-        'arrowstyle': '-|>',
-        'arrowsize': 15,
-    }
-
-    dias = []
-    for i in range(G.nodes[start_node]['ES'], G.nodes[finish_node]['EF']):
-        dia = 'día ' + str(i)
-        dias.append(dia)
-
-    mapeado = range(len(dias))
-
-    # Se hace pasan los parametros que representan el grafo com una ruta critica
-    image_file = "ruta-critica/fondografo.png"
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.set_facecolor('#d4b7ff')
-    nx.draw_networkx_nodes(G, pos, node_color=color_map, node_size=500)
-    nx.draw_networkx_edges(
-        G, pos, alpha=0.6, edge_color='black', arrows=True, **options_arrow)
-    nx.draw_networkx_labels(G, pos, font_size=6, font_family='sans-serif')
-    plt.xticks(mapeado, dias)
-    plt.title('Actividades de la Ruta Crítica (Nodos en Morado)')
-    plt.show()
-
-    return G, critical_path
+    
