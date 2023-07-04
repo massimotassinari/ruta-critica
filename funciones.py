@@ -42,7 +42,7 @@ def start_finish_nodes(info):
     #inicio
     
     
-    if count > 1:
+    if contar > 1:
         for y in info:
             if y['start_node'] == True:
                 y['start_node'] = False
